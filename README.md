@@ -1,5 +1,4 @@
-# <p align="center"> x.x </p>
-## <p align="center"> gamedev language </p>
+# <p align="center"> x.x - gamedev language </p>
 
 A Clojure [Entity Component System](https://en.wikipedia.org/wiki/Entity_component_system) working on plain atoms, maps and keywords.
 
