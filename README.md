@@ -1,4 +1,7 @@
-# x.x
+
+# x•x - gamedev language
+
+
 
 A Clojure [Entity Component System](https://en.wikipedia.org/wiki/Entity_component_system) working on plain atoms, maps and keywords.
 
