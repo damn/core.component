@@ -74,7 +74,7 @@ and using atoms and systems with side-effects do not need to be used.
   (tick [_ v delta]
     (update v :counter + delta)))
 
-(reduce-v tick {:a {:counter 0}} 10)
+(x/reduce-v tick {:a {:counter 0}} 10)
 ; {:a {:counter 10}}
 ```
 
