@@ -35,7 +35,7 @@ Abbreviation | Meaning | Datatype
  r   | entity-reference  | atom
  sys | system            | multimethod
 
-Note that the main systm works just with plain maps
+Note that the main system works just with plain maps
 and using atoms and systems with side-effects do not need to be used.
 
 ## Example
@@ -69,7 +69,6 @@ and using atoms and systems with side-effects do not need to be used.
 ; using extra params with defsystem
 
 (x/defsystem tick [component value delta] value)
-; => [#'user/tick [#'user/tick-c #'user/tick-e #'user/tick!]]
 
 (x/extend-component :a
   (tick [_ v delta]
