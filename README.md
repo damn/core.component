@@ -14,7 +14,7 @@ x.x allows us to separate both functions with side effects and pure functions cl
 
 # Future work
 
-* Try with datomic: not walk all entity keys all the time but query directly for components. Time-travel, serialization of gamestate, etc.
+* Try with datomic: not walk all entity keys all the time but query directly for components. Time-travel, serialization of gamestate, history of transactions for networking etc.
 
 # Installation
 
