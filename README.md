@@ -40,6 +40,12 @@ and using atoms and systems with side-effects do not need to be used.
 
 ## Example
 
+There are only 2 macros: _defsystem_ and _extend-component_. Systems can be applied with _apply-sys_ or _apply-sys!_ for systems without and with side-effects.
+
+There is also a convenience macro _defsystems_ for defining one pure and one system with side effects.
+
+Because systems are just plain multimethods which dispatch on the first argument, you can also easily compose systems and arguments.
+
 ``` clojure
 (require '[x.x :as x])
 
