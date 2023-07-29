@@ -16,10 +16,6 @@ Because game state is stored in different atoms for each entity, we have to make
 But for functions which only handle local component state we want to make them purely functional.
 x.x allows us to separate both functions with side effects and pure functions cleanly.
 
-# Future work
-
-* Try with datomic: not walk all entity keys all the time but query directly for components. Time-travel, serialization of gamestate, history of transactions for networking etc.
-
 # Installation
 
 [![](https://jitpack.io/v/damn/x.x.svg)](https://jitpack.io/#damn/x.x)
@@ -89,6 +85,11 @@ Because systems are just plain multimethods which dispatch on the first argument
 ; B says hi
 ; #object[clojure.lang.Atom 0x7daf5b58 {:status :ready, :val {:a 1, :b 10, :foo 10, :fooz {:bar {:baz 3}}}}]
 ```
+
+# Future work
+
+* Try with datomic: not walk all entity keys all the time but query directly for components. Time-travel, serialization of gamestate, history of transactions for networking etc.
+
 
 ## License
 
