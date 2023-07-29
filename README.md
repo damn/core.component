@@ -1,20 +1,20 @@
 # <p align="center"> x.x - gamedev language </p>
 
-A Clojure [Entity Component System](https://en.wikipedia.org/wiki/Entity_component_system) DSL which is working with plain atoms, maps, keywords and multimethods. 
+A Clojure [Entity Component System](https://en.wikipedia.org/wiki/Entity_component_system) DSL which works with plain atoms, maps, keywords and multimethods. 
 No type classes involved. No dependencies and only 60 LOC.
 
-This system is not a tech demo but has been used since a few months in an action RPG game I am developing. (Unreleased yet).
-You can see an application in [gdl, a clojure game engine](https://github.com/damn/gdl).
+This system is not a tech demo but has been used for a few months in an action RPG game I am developing. (Unreleased yet).
+You can see its application in [gdl, a Clojure game engine](https://github.com/damn/gdl).
 
 # Why gamedev language?
 
-I want to create language extensions (which is simple in clojure through macros) and [libraries](https://github.com/damn/gdl) with the goal to make it more simple, easy and fn to design emergent systems.
+I wanted to create language extensions (which is simple in Clojure through macros) and [libraries](https://github.com/damn/gdl) with the goal to make it more simple, easy, and fun to design emergent systems.
 
 # Rationale
 
-Because game state is stored in different atoms for each entity, we have to make use with side effects.
+Because game state is stored in different atoms for each entity, we have to make use of side effects.
 But for functions which only handle local component state we want to make them purely functional.
-x.x allows us to separate both functions with side effects and pure functions cleanly.
+x.x allows us to separate functions with side effects and pure functions cleanly.
 
 # Installation
 
@@ -33,8 +33,7 @@ Abbreviation | Meaning | Datatype
  r   | entity-reference  | atom
  sys | system            | multimethod
 
-Note that the main system works just with plain maps
-and using atoms and systems with side-effects do not need to be used.
+Note that the main system works just with plain maps. Atoms and systems with side-effects do not need to be used.
 
 ## Example
 
