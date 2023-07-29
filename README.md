@@ -1,6 +1,6 @@
 # <p align="center"> x.x - gamedev language </p>
 
-A Clojure [Entity Component System](https://en.wikipedia.org/wiki/Entity_component_system) working on plain atoms, maps and keywords.
+A Clojure [Entity Component System](https://en.wikipedia.org/wiki/Entity_component_system) working on plain atoms, maps, keywords and multimethods. No magic involved. No dependencies and only 60 LOC.
 
 > Entity component system (ECS) is a software architectural pattern mostly used in video game development for the representation of game world objects. An ECS comprises entities composed from components of data, with systems which operate on entities' components.
 >
