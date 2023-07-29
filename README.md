@@ -47,7 +47,7 @@ Because systems are just plain multimethods which dispatch on the first argument
 ``` clojure
 
 ; How to create an entity:
-(def e {:foo :bar :bar :baz}
+(def e {:foo :fooz :bar :baz}
 ; Now we want to add a component:
 (def e (assoc e :mouseover? true))
 ; remove a component:
