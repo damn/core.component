@@ -1,4 +1,7 @@
 # <p align="center"> x.x </p>
+<p align="center">
+<image src="https://kiss.one/lotus_centered.jpg" width="250" height="200"/>
+</p>
 
 A Clojure [Entity Component System](https://en.wikipedia.org/wiki/Entity_component_system) DSL which works with plain atoms, maps, keywords and multimethods. 
 No type classes involved. No dependencies and only 60 LOC.
