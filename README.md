@@ -14,9 +14,7 @@ x.x allows us to separate both functions with side effects and pure functions cl
 
 # Future work
 
-* Transients in the reduce fns
-
-* Datomic? (not walk all entity keys all the time but query directly for components)
+* Try with datomic: not walk all entity keys all the time but query directly for components. Time-travel, serialization of gamestate, etc.
 
 # Installation
 
