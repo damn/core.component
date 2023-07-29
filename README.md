@@ -66,12 +66,13 @@ Because systems are just plain multimethods which dispatch on the first argument
 (tick :a {:counter 0} 3)
 ; {:counter 3}
 
-(x/defsystem create  [c v] v) ; just takes value and returns new value
+; all defsystems need to have a first argument 'c' for the component-type. (a clojure keyword).
+(x/defsystem create  [c v] v) ; a pure system which updates value, like tick. But with no extra argument.
 (x/defsystem create! [c r]) ; for side-effects
 
 (x/extend-component :a
-  (create [_ v] (inc v))
-  (create! [_ r]
+  (create [_ v] (inc v)) ; the first argument is not used, it is a reference to the keyword :a
+  (create! [_ r] 
     (println "CREATE A !")
     (swap! r assoc-in [:fooz :bar :baz] 3)))
 
