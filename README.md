@@ -10,6 +10,12 @@ You can see an application in [gdl, a clojure game engine](https://github.com/da
 
 I want to create language extensions (which is simple in clojure through macros) and [libraries](https://github.com/damn/gdl) with the goal to make it more simple, easy and fn to design emergent systems.
 
+# Useful links
+
+[Why game programming is broken](https://namekdev.net/2017/05/exploring-directions-to-fix-game-programming/)
+
+[Overwatch ECS architecture GDC video](https://youtu.be/zrIY0eIyqmI)
+
 # Rationale
 
 Because game state is stored in different atoms for each entity, we have to make use with side effects.
