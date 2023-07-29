@@ -49,7 +49,8 @@ Because systems are just plain multimethods which dispatch on the first argument
 ``` clojure
 (require '[x.x :as x])
 
-(x/defsystem tick [c v delta] v)
+; the tick system updates entities in game logic and passes delta time in elapsed ms since last update
+(x/defsystem tick [c v delta] v) ; v is the default return value for components which do not implement the system
 
 (x/extend-component :a
   (tick [_ v delta]
@@ -57,6 +58,11 @@ Because systems are just plain multimethods which dispatch on the first argument
 
 (x/apply-sys tick {:a {:counter 0}} 10)
 ; {:a {:counter 10}}
+
+; because systems are normal multimethods you can just call them directly also
+; on specific components
+(tick :a {:counter 0} 3)
+; {:counter 3}
 
 (x/defsystem create  [c v] v) ; just takes value and returns new value
 (x/defsystem create! [c r]) ; for side-effects
