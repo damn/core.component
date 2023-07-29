@@ -87,7 +87,7 @@ Because systems are just plain multimethods which dispatch on the first argument
 ```
 # Other Clojure ECS
 
-Difference to x.x: I have not tried those yet, but as far as I have researched they are using special types and not operating on plain data.
+Difference to x.x: I have not tried those yet, but as far as I have researched they are using special types to wrap components/entities and not operating on plain data.
 
 * https://github.com/markmandel/brute
 * https://github.com/muhuk/clecs
