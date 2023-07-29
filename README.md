@@ -68,7 +68,7 @@ Because systems are just plain multimethods which dispatch on the first argument
 (x/apply-sys tick {:a {:counter 0}} 10)
 ; {:a {:counter 10}}
 
-; because systems are normal multimethods you can just call them directly also
+; because systems are normal functions/multimethods you can just call them directly also
 ; on specific components
 (tick :a {:counter 0} 3)
 ; {:counter 3}
