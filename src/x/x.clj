@@ -1,5 +1,8 @@
 (ns x.x)
 
+; TODO  ?
+; [clojure.tools.macro :refer (name-with-attributes)]
+
 (defmacro defsystem
   {:arglists '([name [params*] default-return-value?])}
   [sys-name params & default-return-value]
@@ -27,44 +30,25 @@
          `(defmethod ~sys ~c ~@fn-body)))
     ~c))
 
-(defn reduce-v
-  "Applies a system with params [c v & more] on an entity e, updating v for every c."
-  [sys e & args]
-  (reduce (fn [e c]
-            (update e c #(apply sys c % args)))
-          e
-          (keys e)))
+(defn reduce-vs [f m]
+  (persistent!
+   (reduce-kv (fn [new-map k v]
+                (assoc! new-map k (f k v)))
+              (transient {})
+              m)))
 
-(defn reduce-e
-  "Applies a system with params [c e & more] on an entity e, updating e for every c."
-  [sys e & args]
-  (reduce (fn [e c]
-            (apply sys c e args))
-          e
-          (keys e)))
+(defn reduce-v [sys e & args] (reduce-vs (fn [c v]  (apply sys c v args)) e))
+(defn doseq-e! [sys e & args] (doseq [c (keys e)]   (apply sys c e args)))
+(defn doseq-r! [sys r & args] (doseq [c (keys @r)]  (apply sys c r args)))
 
-(defn doseq-r!
-  "Doseq's over (keys @r), calling a system with params [c r & more]"
-  [sys r & args]
-  (doseq [c (keys @r)]
-    (apply sys c r args)))
-
-(defn doseq-e!
-  "Doseq's over (keys e), calling a system with params [c e & more]"
-  [sys e & args]
-  (doseq [c (keys e)]
-    (apply sys c e args)))
-
-(defn !x! [[sys-v sys-e sys-r] r & args] ; TODO just x! or apply!
-  (let [e (apply reduce-v sys-v @r args)
-        e (apply reduce-e sys-e  e args)]
+(defn !x! [[sys-v sys-r] r & args] ; TODO just x! or apply!
+  (let [e (apply reduce-v sys-v @r args)]
     (reset! r e)
     (apply doseq-r! sys-r r args)
     r))
 
-(defmacro defsystems [sys-name [vsys esys rsys] & {:keys [extra-params]}]
+(defmacro defsystems [sys-name [vsys rsys] & {:keys [extra-params]}]
   `(let [systems# [(defsystem ~vsys [~'c ~'v ~@extra-params] ~'v)
-                   (defsystem ~esys [~'c ~'e ~@extra-params] ~'e)
                    (defsystem ~rsys [~'c ~'r ~@extra-params])]]
      [(def ~sys-name systems#) systems#]))
 
