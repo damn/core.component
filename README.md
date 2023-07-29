@@ -85,6 +85,14 @@ Because systems are just plain multimethods which dispatch on the first argument
 ; B says hi
 ; #object[clojure.lang.Atom 0x7daf5b58 {:status :ready, :val {:a 1, :b 10, :foo 10, :fooz {:bar {:baz 3}}}}]
 ```
+# Other Clojure ECS
+
+Difference to x.x: I have not tried those yet, but as far as I have researched they are using special types and not operating on plain data.
+
+https://github.com/markmandel/brute
+https://github.com/muhuk/clecs
+https://github.com/weavejester/ittyon
+https://github.com/joinr/spork/blob/master/src/spork/entitysystem/store.clj
 
 # Future work
 
