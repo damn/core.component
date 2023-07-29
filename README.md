@@ -43,28 +43,25 @@ and using atoms and systems with side-effects do not need to be used.
 ``` clojure
 (require '[x.x :as x])
 
-(x/defsystem create   [c v] v) ; just takes value and returns new value
-(x/defsystem create-e [c e] e) ; just takes entity and returns new entity
-(x/defsystem create!  [c r]) ; for side-effects
+(x/defsystem create  [c v] v) ; just takes value and returns new value
+(x/defsystem create! [c r]) ; for side-effects
 
 (x/extend-component :a
   (create [_ v] (inc v))
-  (create-e [_ e] (update e :foo dec))
   (create! [_ r]
     (println "CREATE A !")
     (swap! r assoc-in [:fooz :bar :baz] 3)))
 
 (x/extend-component :b
-  (create-e [_ e] (assoc e :babaz :cool))
   (create! [_ r] (println "B says hi")))
 
-(def create-systems [create create-e create!])
+(def create-systems [create create!])
 
-(x/!x! create-systems (atom {:a 0 :b 10 :foo 10}))
+(deref (x/!x! create-systems (atom {:a 0 :b 10 :foo 10})))
 ; =>
 ; CREATE A !
 ; B says hi
-; {:a 1, :b 10, :foo 9, :babaz :cool, :fooz {:bar {:baz 3}}}
+; {:a 1, :b 10, :foo 10, :fooz {:bar {:baz 3}}}
 
 ; using extra params with defsystem
 
@@ -76,6 +73,7 @@ and using atoms and systems with side-effects do not need to be used.
 
 (x/reduce-v tick {:a {:counter 0}} 10)
 ; {:a {:counter 10}}
+
 ```
 
 ## License
