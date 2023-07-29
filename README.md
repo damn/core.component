@@ -45,6 +45,15 @@ There is also a convenience macro `defsystems` for defining one pure and one sys
 Because systems are just plain multimethods which dispatch on the first argument, you can also easily compose and extend systems with any other functions.
 
 ``` clojure
+
+; How to create an entity:
+(def e {:foo :bar :bar :baz}
+; Now we want to add a component:
+(def e (assoc e :mouseover? true))
+; remove a component:
+(def e (dissoc e :mouseover?)
+; entities are just maps and components just keywords&values, so it is totally simple
+
 (require '[x.x :as x])
 
 ; the tick system updates entities in game logic and passes delta time in elapsed ms since last update
