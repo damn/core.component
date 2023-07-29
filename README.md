@@ -40,9 +40,9 @@ and using atoms and systems with side-effects do not need to be used.
 
 ## Example
 
-There are only 2 macros: _defsystem_ and _extend-component_. Systems can be applied with _apply-sys_ or _apply-sys!_ for systems without and with side-effects.
+There are only 2 macros: `defsystem` and `extend-component`. Systems can be applied with `apply-sys` or `apply-sys!` for systems without and with side-effects.
 
-There is also a convenience macro _defsystems_ for defining one pure and one system with side effects.
+There is also a convenience macro `defsystems` for defining one pure and one system with side effects and `apply-systems!` for applying them both to an atom reference of an entity.
 
 Because systems are just plain multimethods which dispatch on the first argument, you can also easily compose systems and arguments.
 
