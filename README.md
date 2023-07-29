@@ -1,4 +1,4 @@
-# <p align="center"> x.x - gamedev language </p>
+# <p align="center"> x.x </p>
 
 A Clojure [Entity Component System](https://en.wikipedia.org/wiki/Entity_component_system) DSL which works with plain atoms, maps, keywords and multimethods. 
 No type classes involved. No dependencies and only 60 LOC.
@@ -6,9 +6,11 @@ No type classes involved. No dependencies and only 60 LOC.
 This system is not a tech demo but has been used for a few months in an action RPG game I am developing. (Unreleased yet).
 You can see its application in [gdl, a Clojure game engine](https://github.com/damn/gdl).
 
-# Why gamedev language?
+# Useful links
 
-I wanted to create language extensions (which is simple in Clojure through macros) and [libraries](https://github.com/damn/gdl) with the goal to make it more simple, easy, and fun to design emergent systems.
+[Why game programming is broken](https://namekdev.net/2017/05/exploring-directions-to-fix-game-programming/)
+
+[Overwatch ECS architecture GDC video](https://youtu.be/zrIY0eIyqmI)
 
 # Rationale
 
@@ -96,7 +98,7 @@ Because systems are just plain multimethods which dispatch on the first argument
 
 # See the system being used
 
-[Here x.x is used for managing creation/destruction and ticks of entities.](https://github.com/damn/gdl/blob/main/src/gdl/ecs.clj)
+[Here x.x is used for managing creation/destruction and ticks of entities.](https://github.com/damn/gdl/blob/a864c000cffb41843dce3b5575461ba098f7f921/src/gdl/ecs.clj)
 
 # Other Clojure ECS
 
