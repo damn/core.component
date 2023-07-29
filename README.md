@@ -8,7 +8,7 @@ You can see an application in [gdl, a clojure game engine](https://github.com/da
 
 # Why gamedev language?
 
-I want to create language extensions (which is simple in clojure through macros) and [libraries](https://github.com/damn/gdl) which will be like a language for developing games. The goal is to make more simpler, easier and fun to design emergent systems.
+I want to create language extensions (which is simple in clojure through macros) and [libraries](https://github.com/damn/gdl) whith the goal to make it more simple, easy and fn to design emergent systems.
 
 # Rationale
 
