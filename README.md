@@ -50,7 +50,9 @@ Because systems are just plain multimethods which dispatch on the first argument
 (require '[x.x :as x])
 
 ; the tick system updates entities in game logic and passes delta time in elapsed ms since last update
-(x/defsystem tick [c v delta] v) ; v is the default return value for components which do not implement the system
+(x/defsystem tick [c v delta] v)
+; v is defined as default return value for components which do not implement the system
+; which means they are not updated on apply-sys.
 
 (x/extend-component :a
   (tick [_ v delta]
