@@ -97,7 +97,7 @@ Because systems are just plain multimethods which dispatch on the first argument
 
 # See the system being used
 
-[Here x.x is used for managing creation/destruction and ticks of entities.](https://github.com/damn/gdl/blob/main/src/gdl/ecs.clj)
+[Here x.x is used for managing creation/destruction and ticks of entities.]([https://github.com/damn/gdl/blob/main/src/gdl/ecs.clj](https://github.com/damn/gdl/blob/a864c000cffb41843dce3b5575461ba098f7f921/src/gdl/ecs.clj))
 
 # Other Clojure ECS
 
