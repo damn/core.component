@@ -49,9 +49,7 @@ and using atoms and systems with side-effects do not need to be used.
   (tick [_ v delta]
     (update v :counter + delta)))
 
-(x/apply-system tick
-                {:a {:counter 0}}
-                10)
+(x/apply-sys tick {:a {:counter 0}} 10)
 ; {:a {:counter 10}}
 
 (x/defsystem create  [c v] v) ; just takes value and returns new value

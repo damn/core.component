@@ -41,21 +41,21 @@
 ; transient works with 'clojure.core/update' ? https://groups.google.com/g/clojure/c/h5ks9KDHQmE
 ; => perf tests
 
-(defn apply-system [sys e & args]
+(defn apply-sys [sys e & args]
   (update-map (fn [c v] (apply sys c v args))
               e))
 
-(defn apply-system! [sys r & args]
+(defn apply-sys! [sys r & args]
   (doseq [c (keys @r)]
     (apply sys c r args)))
-
-(defn apply-systems! [[sys-v sys-r] r & args] ; TODO just x! or apply!
-  (let [e (apply apply-system sys-v @r args)]
-    (reset! r e)
-    (apply apply-system! sys-r r args)
-    r))
 
 (defmacro defsystems [sys-name [vsys rsys] & {:keys [extra-params]}]
   `(let [systems# [(defsystem ~vsys [~'c ~'v ~@extra-params] ~'v)
                    (defsystem ~rsys [~'c ~'r ~@extra-params])]]
      [(def ~sys-name systems#) systems#]))
+
+(defn apply-systems! [[sys-v sys-r] r & args]
+  (let [e (apply apply-sys sys-v @r args)]
+    (reset! r e)
+    (apply apply-sys! sys-r r args)
+    r))
