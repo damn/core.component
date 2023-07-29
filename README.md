@@ -1,4 +1,4 @@
-# <p align="center"> x.x - gamedev language </p>
+# <p align="center"> x - gamedev language </p>
 
 A Clojure [Entity Component System](https://en.wikipedia.org/wiki/Entity_component_system) DSL which is working with plain atoms, maps, keywords and multimethods. 
 No type classes involved. No dependencies and only 60 LOC.
