@@ -22,7 +22,7 @@ x.x allows us to separate both functions with side effects and pure functions cl
 
 [![](https://jitpack.io/v/damn/x.x.svg)](https://jitpack.io/#damn/x.x)
 ```
-[com.github.damn/x.x "x"]
+[com.github.damn/x.x "x.1"]
 ```
 
 ## Glossary
