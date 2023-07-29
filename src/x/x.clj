@@ -62,15 +62,13 @@
     (apply doseq-r! sys-r r args)
     r))
 
-; TODO does not handle extra args yet ! ~@extra-args in each defsystem.
-
 (defmacro defsystems [sys-name [vsys esys rsys] & {:keys [extra-params]}]
   `(let [systems# [(defsystem ~vsys [~'c ~'v ~@extra-params] ~'v)
                    (defsystem ~esys [~'c ~'e ~@extra-params] ~'e)
                    (defsystem ~rsys [~'c ~'r ~@extra-params])]]
      [(def ~sys-name systems#) systems#]))
 
-(defn intern-clojure []
+#_(defn intern-clojure []
   (in-ns 'clojure.core)
   (require 'potemkin.namespaces)
 
