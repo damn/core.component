@@ -1,14 +1,10 @@
-# <p align="center"> x - gamedev language </p>
+# <p align="center"> x.x </p>
 
 A Clojure [Entity Component System](https://en.wikipedia.org/wiki/Entity_component_system) DSL which is working with plain atoms, maps, keywords and multimethods. 
 No type classes involved. No dependencies and only 60 LOC.
 
 This system is not a tech demo but has been used since a few months in an action RPG game I am developing. (Unreleased yet).
 You can see an application in [gdl, a clojure game engine](https://github.com/damn/gdl).
-
-# Why gamedev language?
-
-I want to create language extensions (which is simple in clojure through macros) and [libraries](https://github.com/damn/gdl) with the goal to make it more simple, easy and fn to design emergent systems.
 
 # Useful links
 
