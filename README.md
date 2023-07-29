@@ -94,6 +94,9 @@ Because systems are just plain multimethods which dispatch on the first argument
 ; B says hi
 ; #object[clojure.lang.Atom 0x7daf5b58 {:status :ready, :val {:a 1, :b 10, :foo 10, :fooz {:bar {:baz 3}}}}]
 ```
+
+[Here is a use case for managing creation/destruction and ticks of entities.](https://github.com/damn/gdl/blob/main/src/gdl/ecs.clj)
+
 # Other Clojure ECS
 
 Difference to x.x: I have not tried those yet, but as far as I have researched they are using special types to wrap components/entities and not operating on plain data.
