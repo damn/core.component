@@ -52,7 +52,7 @@ Because systems are just plain multimethods which dispatch on the first argument
 (def e (assoc e :mouseover? true))
 ; remove a component:
 (def e (dissoc e :mouseover?)
-; entities are just maps and components just keywords&values, so it is totally simple
+; entities are just maps and components just keywords&values, so it is totally simple to use!
 
 (require '[x.x :as x])
 
