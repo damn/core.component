@@ -1,7 +1,7 @@
 # <p align="center"> x.x - gamedev language </p>
 
 A Clojure [Entity Component System](https://en.wikipedia.org/wiki/Entity_component_system) DSL which is working with plain atoms, maps, keywords and multimethods. 
-No magic involved. No dependencies and only 60 LOC.
+No type classes involved. No dependencies and only 60 LOC.
 
 This system is not a tech demo but has been used since a few months in an action RPG game I am developing. (Unreleased yet).
 You can see an application in [gdl, a clojure game engine](https://github.com/damn/gdl).
@@ -27,8 +27,8 @@ x.x allows us to separate both functions with side effects and pure functions cl
 
 Abbreviation | Meaning | Datatype
 ----- | ----    | ----
- c   | (component) type  | keyword
- v   | (component) value | anything
+ c   | component type  | keyword
+ v   | component value | anything
  e   | entity            | map
  r   | entity-reference  | atom
  sys | system            | multimethod
