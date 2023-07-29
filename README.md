@@ -13,7 +13,7 @@ I want to create language extensions (which is simple in clojure through macros)
 # Rationale
 
 Because game state is stored in different atoms for each entity, we have to make use with side effects.
-But for functions which only handle local component/entity state we want to make them purely functional.
+But for functions which only handle local component state we want to make them purely functional.
 x.x allows us to separate both functions with side effects and pure functions cleanly.
 
 # Future work
