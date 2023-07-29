@@ -43,6 +43,17 @@ and using atoms and systems with side-effects do not need to be used.
 ``` clojure
 (require '[x.x :as x])
 
+(x/defsystem tick [c v delta] v)
+
+(x/extend-component :a
+  (tick [_ v delta]
+    (update v :counter + delta)))
+
+(x/apply-system tick
+                {:a {:counter 0}}
+                10)
+; {:a {:counter 10}}
+
 (x/defsystem create  [c v] v) ; just takes value and returns new value
 (x/defsystem create! [c r]) ; for side-effects
 
@@ -53,27 +64,15 @@ and using atoms and systems with side-effects do not need to be used.
     (swap! r assoc-in [:fooz :bar :baz] 3)))
 
 (x/extend-component :b
-  (create! [_ r] (println "B says hi")))
+  (create! [_ r]
+    (println "B says hi")))
 
 (def create-systems [create create!])
 
-(deref (x/!x! create-systems (atom {:a 0 :b 10 :foo 10})))
-; =>
+(x/apply-systems! create-systems (atom {:a 0 :b 10 :foo 10}))
 ; CREATE A !
 ; B says hi
-; {:a 1, :b 10, :foo 10, :fooz {:bar {:baz 3}}}
-
-; using extra params with defsystem
-
-(x/defsystem tick [component value delta] value)
-
-(x/extend-component :a
-  (tick [_ v delta]
-    (update v :counter + delta)))
-
-(x/reduce-v tick {:a {:counter 0}} 10)
-; {:a {:counter 10}}
-
+; #object[clojure.lang.Atom 0x7daf5b58 {:status :ready, :val {:a 1, :b 10, :foo 10, :fooz {:bar {:baz 3}}}}]
 ```
 
 ## License
