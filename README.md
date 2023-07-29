@@ -44,7 +44,7 @@ There are only 2 macros: `defsystem` and `extend-component`. Systems can be appl
 
 There is also a convenience macro `defsystems` for defining one pure and one system with side effects and `apply-systems!` for applying them both to an atom reference of an entity.
 
-Because systems are just plain multimethods which dispatch on the first argument, you can also easily compose systems and arguments.
+Because systems are just plain multimethods which dispatch on the first argument, you can also easily compose and extend systems with any other functions.
 
 ``` clojure
 (require '[x.x :as x])
