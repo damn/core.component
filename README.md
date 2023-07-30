@@ -3,7 +3,7 @@
 <image src="https://kiss.one/lotus_centered.jpg" width="250" height="200"/>
 </p>
 
-A Clojure [Entity Component System](https://en.wikipedia.org/wiki/Entity_component_system) DSL which works with plain atoms, maps, keywords and multimethods. 
+A Clojure [Entity Component System](https://en.wikipedia.org/wiki/Entity_component_system) DSL which works with plain atoms, maps, keywords and multimethods.
 No type classes involved. No dependencies and only 60 LOC.
 
 This system is not a tech demo but has been used for a few months in an action RPG game I am developing. (Unreleased yet).
@@ -42,7 +42,7 @@ Note that the main system works just with plain maps. Atoms and systems with sid
 
 ## Example
 
-There are only 2 macros: `defsystem` and `extend-component`. Systems can be applied with `apply-sys` or `apply-sys!` for systems without and with side-effects.
+There are only 2 macros: `defsystem` and `defcomponent`. Systems can be applied with `apply-sys` or `apply-sys!` for systems without and with side-effects.
 
 There is also a convenience macro `defsystems` for defining one pure and one system with side effects and `apply-systems!` for applying them both to an atom reference of an entity.
 
@@ -58,18 +58,18 @@ Because systems are just plain multimethods which dispatch on the first argument
 (def e (dissoc e :mouseover?)
 ; entities are just maps and components just keywords&values, so it is totally simple to use!
 
-(require '[x.x :as x])
+(require '[x.x :refer :all])
 
 ; the tick system updates entities in game logic and passes delta time in elapsed ms since last update
-(x/defsystem tick [c v delta] v)
+(defsystem tick [c v delta] v)
 ; v is defined as default return value for components which do not implement the system
 ; which means they are not updated on apply-sys.
 
-(x/extend-component :a
+(defcomponent :a
   (tick [_ v delta]
     (update v :counter + delta)))
 
-(x/apply-sys tick {:a {:counter 0}} 10)
+(apply-sys tick {:a {:counter 0}} 10)
 ; {:a {:counter 10}}
 
 ; because systems are normal functions/multimethods you can just call them directly also
@@ -78,22 +78,22 @@ Because systems are just plain multimethods which dispatch on the first argument
 ; {:counter 3}
 
 ; all defsystems need to have a first argument 'c' for the component-type. (a clojure keyword).
-(x/defsystem create  [c v] v) ; a pure system which updates value, like tick. But with no extra argument.
-(x/defsystem create! [c r]) ; for side-effects
+(defsystem create  [c v] v) ; a pure system which updates value, like tick. But with no extra argument.
+(defsystem create! [c r]) ; for side-effects
 
-(x/extend-component :a
+(defcomponent :a
   (create [_ v] (inc v)) ; the first argument is not used, it is a reference to the keyword :a
-  (create! [_ r] 
+  (create! [_ r]
     (println "CREATE A !")
     (swap! r assoc-in [:fooz :bar :baz] 3)))
 
-(x/extend-component :b
+(defcomponent :b
   (create! [_ r]
     (println "B says hi")))
 
 (def create-systems [create create!])
 
-(x/apply-systems! create-systems (atom {:a 0 :b 10 :foo 10}))
+(apply-systems! create-systems (atom {:a 0 :b 10 :foo 10}))
 ; CREATE A !
 ; B says hi
 ; #object[clojure.lang.Atom 0x7daf5b58 {:status :ready, :val {:a 1, :b 10, :foo 10, :fooz {:bar {:baz 3}}}}]

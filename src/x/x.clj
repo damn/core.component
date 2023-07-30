@@ -14,7 +14,7 @@
     (defmethod ~sys-name :default ~params ~@default-return-value)
     (var ~sys-name)))
 
-(defmacro extend-component [c & sys-impls]
+(defmacro defcomponent [c & sys-impls]
   `(do
     ~@(for [[sys & fn-body] sys-impls
             :let [sys-var (resolve sys)
