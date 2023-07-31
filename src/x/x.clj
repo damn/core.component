@@ -10,7 +10,7 @@
     (throw (IllegalArgumentException. "Requires at least 1 param for dispatching.")))
   `(do
     (defmulti ~(vary-meta sys-name assoc :params (list 'quote params))
-      (fn [~@params] ~(first params)))
+      (fn ~(symbol (str (name sys-name))) [~@params] ~(first params)))
     (defmethod ~sys-name :default ~params ~@default-return-value)
     (var ~sys-name)))
 
