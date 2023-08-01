@@ -25,6 +25,10 @@ x.x allows us to separate functions with side effects and pure functions cleanly
 [com.github.damn/x.x "main-SNAPSHOT"]
 ```
 
+# Documentation
+
+* [API docs](https://damn.github.io/x.x/)
+
 ## Glossary
 
 Abbreviation | Meaning           | Datatype
@@ -41,8 +45,6 @@ Note that the main system works just with plain maps. Atoms and systems with sid
 ## Example
 
 There are only 2 macros: `defsystem` and `defcomponent`. Systems can be applied with `apply-sys` or `apply-sys!` for systems without and with side-effects.
-
-There is also a convenience macro `defsystems` for defining one pure and one system with side effects and `apply-systems!` for applying them both to an atom reference of an entity.
 
 Because systems are just plain multimethods which dispatch on the first argument, you can also easily compose and extend systems with any other functions.
 
@@ -89,9 +91,9 @@ All systems take `c` as first argument, which is just `[k v]` and the default re
   (create! [_ e]
     (println "B says hi")))
 
-(def create-systems [create create!])
-
-(apply-systems! create-systems (atom {:a 0 :b 10 :foo 10}))
+; this is a convenience function to apply one
+; pure and one system with side-effects after another
+(apply-systems! [create create!] (atom {:a 0 :b 10 :foo 10}))
 ; CREATE A !
 ; B says hi
 ; #object[clojure.lang.Atom 0x7daf5b58 {:status :ready, :val {:a 1, :b 10, :foo 10, :fooz {:bar {:baz 3}}}}]

@@ -44,9 +44,7 @@
               m)))
 
 (defn apply-sys [sys m & args]
-  (update-map (fn [c]
-                (apply sys c args))
-              m))
+  (update-map (fn [c] (apply sys c args)) m))
 
 (defn apply-sys! [sys e & args]
   (doseq [k (keys @e)
@@ -54,15 +52,8 @@
                 c [k (k m)]]]
     (apply sys c e args)))
 
-(defmacro defsystems [sys-name [vsys esys] & {:keys [extra-params]}]
-  (let [c '[k v]]
-    `(let [systems# [(defsystem ~vsys [~c     ~@extra-params])
-                     (defsystem ~esys [~c ~'e ~@extra-params])]]
-       [(def ~sys-name systems#)
-        systems#])))
-
-(defn apply-systems! [[sys-v sys-e] e & args]
-  (let [m (apply apply-sys sys-v @e args)]
+(defn apply-systems! [[sys-c sys-ce] e & args]
+  (let [m (apply apply-sys sys-c @e args)]
     (reset! e m)
-    (apply apply-sys! sys-e e args)
+    (apply apply-sys! sys-ce e args)
     e))
