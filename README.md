@@ -6,9 +6,6 @@
 A Clojure [Entity Component System](https://en.wikipedia.org/wiki/Entity_component_system) DSL which works with plain atoms, maps, keywords and multimethods.
 No type classes involved. No dependencies and only 60 LOC.
 
-This system is not a tech demo but has been used for a few months in an action RPG game I am developing. (Unreleased yet).
-You can see its application in [gdl, a Clojure game engine](https://github.com/damn/gdl).
-
 # Useful links
 
 [Why game programming is broken](https://namekdev.net/2017/05/exploring-directions-to-fix-game-programming/)
@@ -101,10 +98,6 @@ Because systems are just plain multimethods which dispatch on the first argument
 ; B says hi
 ; #object[clojure.lang.Atom 0x7daf5b58 {:status :ready, :val {:a 1, :b 10, :foo 10, :fooz {:bar {:baz 3}}}}]
 ```
-
-# See the system being used
-
-[Here x.x is used for managing creation/destruction and ticks of entities.](https://github.com/damn/gdl/blob/a864c000cffb41843dce3b5575461ba098f7f921/src/gdl/ecs.clj)
 
 # Other Clojure ECS
 
