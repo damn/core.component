@@ -1,22 +1,8 @@
 # <p align="center"> x.x </p>
-<p align="center">
-<image src="https://kiss.one/lotus_centered.jpg" width="250" height="200"/>
-</p>
 
 A Clojure [Entity Component System](https://en.wikipedia.org/wiki/Entity_component_system) DSL which works with plain atoms, maps, keywords and multimethods.
 No type classes involved. No dependencies and only 60 LOC.
 
-# Useful links
-
-[Why game programming is broken](https://namekdev.net/2017/05/exploring-directions-to-fix-game-programming/)
-
-[Overwatch ECS architecture GDC video](https://youtu.be/zrIY0eIyqmI)
-
-# Rationale
-
-Because game state is stored in different atoms for each entity, we have to make use of side effects.
-But for functions which only handle local component state we want to make them purely functional.
-x.x allows us to separate functions with side effects and pure functions cleanly.
 
 # Installation
 
@@ -40,7 +26,7 @@ Abbreviation | Meaning           | Datatype
  e           | entity            | atom
  sys         | system            | multimethod
 
-Note that the main system works just with plain maps. Atoms and systems with side-effects do not need to be used.
+Note that you can create only pure systems and use them on maps, side effects are optional.
 
 ## Example
 
