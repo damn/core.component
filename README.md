@@ -92,11 +92,6 @@ Difference to x.x: I have not tried those yet, but as far as I have researched t
 * https://github.com/weavejester/ittyon
 * https://github.com/joinr/spork/blob/master/src/spork/entitysystem/store.clj
 
-# Future work
-
-* Try with datomic: not walk all entity keys all the time but query directly for components. Time-travel, serialization of gamestate, history of transactions for networking etc.
-
-
 ## License
 
 Copyright © 2023 Michael Sappler
