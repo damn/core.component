@@ -46,6 +46,8 @@ There is also a convenience macro `defsystems` for defining one pure and one sys
 
 Because systems are just plain multimethods which dispatch on the first argument, you can also easily compose and extend systems with any other functions.
 
+All systems take `c` as first argument, which is just `[k v]` and the default return value is `v`.
+
 ``` clojure
 
 ; How to create an entity:
@@ -60,11 +62,8 @@ Because systems are just plain multimethods which dispatch on the first argument
 
 ; the tick system updates entities in game logic and passes delta time in elapsed ms since last update
 (defsystem tick [c delta])
-; v is defined as default return value for components which do not implement the system
-; which means they are not updated on apply-sys.
 
-; (defsystem tick [delta]) ; tick & tick!
-
+; value v is bound over each function, but can also be accessed in the first argument [k v]
 (defcomponent :a v
   (tick [_ delta]
     (update v :counter + delta)))
@@ -77,12 +76,11 @@ Because systems are just plain multimethods which dispatch on the first argument
 (tick [:a {:counter 0}] 3)
 ; {:counter 3}
 
-; all defsystems need to have a first argument 'c' for the component-type. (a clojure keyword).
 (defsystem create  [c]) ; a pure system which updates value, like tick. But with no extra argument.
 (defsystem create! [c e]) ; for side-effects
 
 (defcomponent :a v
-  (create [_] (inc v)) ; the first argument is not used, it is a reference to the keyword :a
+  (create [_] (inc v))
   (create! [_ e]
     (println "CREATE A !")
     (swap! e assoc-in [:fooz :bar :baz] 3)))
