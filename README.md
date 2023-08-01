@@ -46,9 +46,7 @@ Note that the main system works just with plain maps. Atoms and systems with sid
 
 There are only 2 macros: `defsystem` and `defcomponent`. Systems can be applied with `apply-sys` or `apply-sys!` for systems without and with side-effects.
 
-Because systems are just plain multimethods which dispatch on the first argument, you can also easily compose and extend systems with any other functions.
-
-All systems take `c` as first argument, which is just `[k v]` and the default return value is `v`.
+Systems are just plain multimethods and take at least one arg `c` / `[k v]`, dispatch on `k` and the default return value is `v`.
 
 ``` clojure
 
