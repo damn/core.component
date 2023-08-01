@@ -25,6 +25,10 @@ x.x allows us to separate functions with side effects and pure functions cleanly
 [com.github.damn/x.x "main-SNAPSHOT"]
 ```
 
+# Documentation
+
+* [API docs](https://damn.github.io/x.x/)
+
 ## Glossary
 
 Abbreviation | Meaning           | Datatype
@@ -42,7 +46,7 @@ Note that the main system works just with plain maps. Atoms and systems with sid
 
 There are only 2 macros: `defsystem` and `defcomponent`. Systems can be applied with `apply-sys` or `apply-sys!` for systems without and with side-effects.
 
-There is also a convenience macro `defsystems` for defining one pure and one system with side effects and `apply-systems!` for applying them both to an atom reference of an entity.
+There is also a convenience macro `defsystems` for defining one pure and one system with side effects and `apply-systems!` for applying them both to an entity.
 
 Because systems are just plain multimethods which dispatch on the first argument, you can also easily compose and extend systems with any other functions.
 
