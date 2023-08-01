@@ -25,18 +25,19 @@ x.x allows us to separate functions with side effects and pure functions cleanly
 
 [![](https://jitpack.io/v/damn/x.x.svg)](https://jitpack.io/#damn/x.x)
 ```
-[com.github.damn/x.x "x.1"]
+[com.github.damn/x.x "main-SNAPSHOT"]
 ```
 
 ## Glossary
 
-Abbreviation | Meaning | Datatype
------ | ----    | ----
- c   | component type  | keyword
- v   | component value | anything
- e   | entity            | map
- r   | entity-reference  | atom
- sys | system            | multimethod
+Abbreviation | Meaning           | Datatype
+-----        | ----              | ----
+ k           | key               | keyword
+ v           | value             | anything
+ c           | component         | [k v]
+ m           | entity value      | map of components
+ e           | entity            | atom
+ sys         | system            | multimethod
 
 Note that the main system works just with plain maps. Atoms and systems with side-effects do not need to be used.
 
@@ -61,12 +62,14 @@ Because systems are just plain multimethods which dispatch on the first argument
 (require '[x.x :refer :all])
 
 ; the tick system updates entities in game logic and passes delta time in elapsed ms since last update
-(defsystem tick [c v delta] v)
+(defsystem tick [c delta])
 ; v is defined as default return value for components which do not implement the system
 ; which means they are not updated on apply-sys.
 
-(defcomponent :a
-  (tick [_ v delta]
+; (defsystem tick [delta]) ; tick & tick!
+
+(defcomponent :a v
+  (tick [_ delta]
     (update v :counter + delta)))
 
 (apply-sys tick {:a {:counter 0}} 10)
@@ -74,21 +77,21 @@ Because systems are just plain multimethods which dispatch on the first argument
 
 ; because systems are normal functions/multimethods you can just call them directly also
 ; on specific components
-(tick :a {:counter 0} 3)
+(tick [:a {:counter 0}] 3)
 ; {:counter 3}
 
 ; all defsystems need to have a first argument 'c' for the component-type. (a clojure keyword).
-(defsystem create  [c v] v) ; a pure system which updates value, like tick. But with no extra argument.
-(defsystem create! [c r]) ; for side-effects
+(defsystem create  [c]) ; a pure system which updates value, like tick. But with no extra argument.
+(defsystem create! [c e]) ; for side-effects
 
-(defcomponent :a
-  (create [_ v] (inc v)) ; the first argument is not used, it is a reference to the keyword :a
-  (create! [_ r]
+(defcomponent :a v
+  (create [_] (inc v)) ; the first argument is not used, it is a reference to the keyword :a
+  (create! [_ e]
     (println "CREATE A !")
-    (swap! r assoc-in [:fooz :bar :baz] 3)))
+    (swap! e assoc-in [:fooz :bar :baz] 3)))
 
-(defcomponent :b
-  (create! [_ r]
+(defcomponent :b v
+  (create! [_ e]
     (println "B says hi")))
 
 (def create-systems [create create!])
