@@ -21,7 +21,7 @@ x.x allows us to separate functions with side effects and pure functions cleanly
 # Installation
 
 [![](https://jitpack.io/v/damn/x.x.svg)](https://jitpack.io/#damn/x.x)
-```
+``` clojure
 [com.github.damn/x.x "main-SNAPSHOT"]
 ```
 
