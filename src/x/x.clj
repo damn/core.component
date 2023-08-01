@@ -1,15 +1,21 @@
 (ns x.x)
 
 (defmacro defsystem
-  {:arglists '([name [params*] default-return-value?])}
-  [sys-name params & default-return-value]
+  "Defines a multimethod with first argument 'component', which is
+  a [k v].
+  Dispatches on k and defines a default defmethod which returns v."
+  [sys-name params]
   (when (zero? (count params))
     (throw (IllegalArgumentException. "First argument needs to be component.")))
   `(do
-    (defmulti
-      ~(vary-meta sys-name assoc :params (list 'quote params))
-      (fn ~(symbol (str (name sys-name))) [& args#] ((first args#) 0)))
-    (defmethod ~sys-name :default ~params (~(first params) 1))
+
+    (defmulti ~(vary-meta sys-name assoc :params (list 'quote params))
+      (fn ~(symbol (str (name sys-name))) [& args#]
+        ((first args#) 0)))
+
+    (defmethod ~sys-name :default ~params
+      (~(first params) 1))
+
     (var ~sys-name)))
 
 (defmacro defcomponent [k v & sys-impls]
@@ -50,9 +56,10 @@
 
 (defmacro defsystems [sys-name [vsys esys] & {:keys [extra-params]}]
   (let [c '[k v]]
-    `(let [systems# [(defsystem ~vsys [~c ~@extra-params] ~'v)
+    `(let [systems# [(defsystem ~vsys [~c     ~@extra-params])
                      (defsystem ~esys [~c ~'e ~@extra-params])]]
-       [(def ~sys-name systems#) systems#])))
+       [(def ~sys-name systems#)
+        systems#])))
 
 (defn apply-systems! [[sys-v sys-e] e & args]
   (let [m (apply apply-sys sys-v @e args)]
