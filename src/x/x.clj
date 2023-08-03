@@ -43,17 +43,17 @@
               (transient {})
               m)))
 
-(defn apply-sys [sys m & args]
+(defn apply-map [sys m & args]
   (update-map (fn [c] (apply sys c args)) m))
 
-(defn apply-sys! [sys e & args]
+(defn apply-doseq [sys e & args]
   (doseq [k (keys @e)
           :let [m @e
                 c [k (k m)]]]
     (apply sys c e args)))
 
-(defn apply-systems! [[sys-c sys-ce] e & args]
-  (let [m (apply apply-sys sys-c @e args)]
+(defn apply-map-doseq [[sys-m sys-d] e & args]
+  (let [m (apply apply-map sys-m @e args)]
     (reset! e m)
-    (apply apply-sys! sys-ce e args)
+    (apply apply-doseq sys-d e args)
     e))
