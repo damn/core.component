@@ -1,8 +1,6 @@
 # <p align="center"> x.x </p>
 
-A Clojure [Entity Component System](https://en.wikipedia.org/wiki/Entity_component_system) DSL which works with plain atoms, maps, keywords and multimethods.
-No type classes involved. No dependencies and only 60 LOC.
-
+A Clojure [Entity Component System](https://en.wikipedia.org/wiki/Entity_component_system) which works with plain atoms, maps, keywords and multimethods.
 
 # Installation
 
@@ -25,8 +23,6 @@ Abbreviation | Meaning           | Datatype
  m           | entity value      | map of components
  e           | entity            | atom
  sys         | system            | multimethod
-
-Note that you can create only pure systems and use them on maps, side effects are optional.
 
 ## Example
 
@@ -73,15 +69,6 @@ Systems are just plain multimethods and take at least one arg `c` / `[k v]`, dis
 ; B says hi
 ; #object[clojure.lang.Atom 0x7daf5b58 {:status :ready, :val {:a 1, :b 10, :foo 10, :fooz {:bar {:baz 3}}}}]
 ```
-
-# Other Clojure ECS
-
-Difference to x.x: I have not tried those yet, but as far as I have researched they are using special types to wrap components/entities and not operating on plain data.
-
-* https://github.com/markmandel/brute
-* https://github.com/muhuk/clecs
-* https://github.com/weavejester/ittyon
-* https://github.com/joinr/spork/blob/master/src/spork/entitysystem/store.clj
 
 ## License
 
