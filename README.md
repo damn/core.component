@@ -1,22 +1,6 @@
 # <p align="center"> x.x </p>
-<p align="center">
-<image src="https://kiss.one/lotus_centered.jpg" width="250" height="200"/>
-</p>
 
-A Clojure [Entity Component System](https://en.wikipedia.org/wiki/Entity_component_system) DSL which works with plain atoms, maps, keywords and multimethods.
-No type classes involved. No dependencies and only 60 LOC.
-
-# Useful links
-
-[Why game programming is broken](https://namekdev.net/2017/05/exploring-directions-to-fix-game-programming/)
-
-[Overwatch ECS architecture GDC video](https://youtu.be/zrIY0eIyqmI)
-
-# Rationale
-
-Because game state is stored in different atoms for each entity, we have to make use of side effects.
-But for functions which only handle local component state we want to make them purely functional.
-x.x allows us to separate functions with side effects and pure functions cleanly.
+A Clojure [Entity Component System](https://en.wikipedia.org/wiki/Entity_component_system) which works with plain atoms, maps, keywords and multimethods.
 
 # Installation
 
@@ -40,26 +24,13 @@ Abbreviation | Meaning           | Datatype
  e           | entity            | atom
  sys         | system            | multimethod
 
-Note that the main system works just with plain maps. Atoms and systems with side-effects do not need to be used.
-
 ## Example
 
-There are only 2 macros: `defsystem` and `defcomponent`. Systems can be applied with `apply-sys` or `apply-sys!` for systems without and with side-effects.
+There are only 2 macros: `defsystem` and `defcomponent`.
 
-Because systems are just plain multimethods which dispatch on the first argument, you can also easily compose and extend systems with any other functions.
-
-All systems take `c` as first argument, which is just `[k v]` and the default return value is `v`.
+Systems are just plain multimethods and take at least one arg `c` / `[k v]`, dispatch on `k` and the default return value is `v`.
 
 ``` clojure
-
-; How to create an entity:
-(def e {:foo :fooz :bar :baz}
-; Now we want to add a component:
-(def e (assoc e :mouseover? true))
-; remove a component:
-(def e (dissoc e :mouseover?)
-; entities are just maps and components just keywords&values, so it is totally simple to use!
-
 (require '[x.x :refer :all])
 
 ; the tick system updates entities in game logic and passes delta time in elapsed ms since last update
@@ -70,7 +41,7 @@ All systems take `c` as first argument, which is just `[k v]` and the default re
   (tick [_ delta]
     (update v :counter + delta)))
 
-(apply-sys tick {:a {:counter 0}} 10)
+(apply-map tick {:a {:counter 0}} 10)
 ; {:a {:counter 10}}
 
 ; because systems are normal functions/multimethods you can just call them directly also
@@ -93,25 +64,11 @@ All systems take `c` as first argument, which is just `[k v]` and the default re
 
 ; this is a convenience function to apply one
 ; pure and one system with side-effects after another
-(apply-systems! [create create!] (atom {:a 0 :b 10 :foo 10}))
+(apply-map-doseq [create create!] (atom {:a 0 :b 10 :foo 10}))
 ; CREATE A !
 ; B says hi
 ; #object[clojure.lang.Atom 0x7daf5b58 {:status :ready, :val {:a 1, :b 10, :foo 10, :fooz {:bar {:baz 3}}}}]
 ```
-
-# Other Clojure ECS
-
-Difference to x.x: I have not tried those yet, but as far as I have researched they are using special types to wrap components/entities and not operating on plain data.
-
-* https://github.com/markmandel/brute
-* https://github.com/muhuk/clecs
-* https://github.com/weavejester/ittyon
-* https://github.com/joinr/spork/blob/master/src/spork/entitysystem/store.clj
-
-# Future work
-
-* Try with datomic: not walk all entity keys all the time but query directly for components. Time-travel, serialization of gamestate, history of transactions for networking etc.
-
 
 ## License
 
