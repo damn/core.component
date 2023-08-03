@@ -50,7 +50,7 @@
               m)))
 
 (defn doseq-entity
-  "Calls (f [k (k @e)] e) on each key of e."
+  "Calls (f [k (k @e)] e) on each key of @e. Returns e."
   [f e]
   (doseq [k (keys @e)]
     (f [k (k @e)] e))
