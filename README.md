@@ -20,8 +20,8 @@ Abbreviation | Meaning           | Datatype
  k           | key               | keyword
  v           | value             | anything
  c           | component         | [k v]
- m           | entity value      | map of components
- e           | entity            | atom
+ m           | entity value      | map (set of components as map-entries )
+ e           | entity            | reference (for example atom)
  sys         | system            | multimethod
 
 ## Example
@@ -37,7 +37,7 @@ Abbreviation | Meaning           | Datatype
   (tick [_ delta]
     (update v :counter + delta)))
 
-(map-components tick {:a {:counter 0}} 10)
+(update-map #(tick % 10) {:a {:counter 0}})
 ; {:a {:counter 10}}
 
 ; because systems are normal functions/multimethods you can just call them directly also
@@ -45,11 +45,9 @@ Abbreviation | Meaning           | Datatype
 (tick [:a {:counter 0}] 3)
 ; {:counter 3}
 
-(defsystem create  [c]) ; a pure system which updates value, like tick. But with no extra argument.
-(defsystem create! [c e]) ; for side-effects
+(defsystem create! [c e])
 
 (defcomponent :a v
-  (create [_] (inc v))
   (create! [_ e]
     (println "CREATE A !")
     (swap! e assoc-in [:fooz :bar :baz] 3)))
@@ -58,12 +56,10 @@ Abbreviation | Meaning           | Datatype
   (create! [_ e]
     (println "B says hi")))
 
-; this is a convenience function to apply one
-; pure and one system with side-effects after another
-(map->doseq-components [create create!] (atom {:a 0 :b 10 :foo 10}))
+(deref (doseq-entity create! (atom {:a 0 :b 10 :foo 10})))
 ; CREATE A !
 ; B says hi
-; #object[clojure.lang.Atom 0x7daf5b58 {:status :ready, :val {:a 1, :b 10, :foo 10, :fooz {:bar {:baz 3}}}}]
+; {:a 0, :b 10, :foo 10, :fooz {:bar {:baz 3}}}
 ```
 
 ## License

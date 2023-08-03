@@ -5,7 +5,7 @@
 
   Components are [k v] vectors.
 
-  The dispatch function is k and the default return values is v."
+  A system dispatches on k and the default return values is v."
   [sys-name params]
   (when (zero? (count params))
     (throw (IllegalArgumentException. "First argument needs to be component.")))
@@ -51,24 +51,9 @@
               (transient {})
               m)))
 
-(defn map-components
-  "Updates every component with (apply sys c args)."
-  [sys m & args]
-  (update-map (fn [c] (apply sys c args)) m))
-
-(defn doseq-components
-  "Calls (apply sys c e args) on every map-entry in @e,
-  with side effects possible."
-  [sys e & args]
-  (doseq [k (keys @e)
-          :let [m @e
-                c [k (k m)]]]
-    (apply sys c e args)))
-
-(defn map->doseq-components
-  "Calls first map-components and then doseq-components on e."
-  [[sys-m sys-d] e & args]
-  (let [m (apply map-components sys-m @e args)]
-    (reset! e m)
-    (apply doseq-components sys-d e args)
-    e))
+(defn doseq-entity
+  "Calls (f [k (k @e)] e) on each key of e."
+  [f e]
+  (doseq [k (keys @e)]
+    (f [k (k @e)] e))
+  e)
