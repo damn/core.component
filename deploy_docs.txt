@@ -1,0 +1,17 @@
+
+
+➜  x.x git:(main) ✗ git checkout gh-pages
+
+➜  x.x git:(gh-pages) ✗ git merge main
+
+➜  x.x git:(gh-pages) ✗ lein codox
+
+➜  x.x git:(gh-pages) ✗ rm -rf docs
+
+➜  x.x git:(gh-pages) ✗ mv target/doc docs
+
+➜  x.x git:(gh-pages) ✗ git add docs
+
+➜  x.x git:(gh-pages) ✗ git commit -m 'Update docs'
+
+➜  x.x git:(gh-pages) ✗ git push
