@@ -1,10 +1,8 @@
 (ns x.x)
 
 (defmacro defsystem
-  "A system is a multimethod which dispatches on a component as first argument.
-
+  "A system takes minimum one argument, a component.
   Components are [k v] vectors.
-
   A system dispatches on k and the default return values is v."
   [sys-name params]
   (when (zero? (count params))
