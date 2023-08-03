@@ -1,9 +1,11 @@
 (ns x.x)
 
 (defmacro defsystem
-  "Defines a multimethod with first argument 'component', which is
-  a [k v].
-  Dispatches on k and defines a default defmethod which returns v."
+  "A system is a multimethod which dispatches on a component as first argument.
+
+  Components are [k v] vectors.
+
+  The dispatch function is k and the default return values is v."
   [sys-name params]
   (when (zero? (count params))
     (throw (IllegalArgumentException. "First argument needs to be component.")))
@@ -18,7 +20,11 @@
 
     (var ~sys-name)))
 
-(defmacro defcomponent [k v & sys-impls]
+(defmacro defcomponent
+  "Implements system defmethods for k.
+
+  v is bound over each function and can be used for common destructuring operations."
+  [k v & sys-impls]
   `(do
     ~@(for [[sys & fn-body] sys-impls
             :let [sys-var (resolve sys)
@@ -36,24 +42,33 @@
               ~@(rest fn-body)))))
     ~k))
 
-(defn update-map [f m]
+(defn update-map
+  "Updates every map-entry with (f [k v])."
+  [f m]
   (persistent!
    (reduce-kv (fn [new-map k v]
                 (assoc! new-map k (f [k v])))
               (transient {})
               m)))
 
-(defn apply-map [sys m & args]
+(defn map-components
+  "Updates every component with (apply sys c args)."
+  [sys m & args]
   (update-map (fn [c] (apply sys c args)) m))
 
-(defn apply-doseq [sys e & args]
+(defn doseq-components
+  "Calls (apply sys c e args) on every map-entry in @e,
+  with side effects possible."
+  [sys e & args]
   (doseq [k (keys @e)
           :let [m @e
                 c [k (k m)]]]
     (apply sys c e args)))
 
-(defn apply-map-doseq [[sys-m sys-d] e & args]
-  (let [m (apply apply-map sys-m @e args)]
+(defn map->doseq-components
+  "Calls first map-components and then doseq-components on e."
+  [[sys-m sys-d] e & args]
+  (let [m (apply map-components sys-m @e args)]
     (reset! e m)
-    (apply apply-doseq sys-d e args)
+    (apply doseq-components sys-d e args)
     e))

@@ -26,10 +26,6 @@ Abbreviation | Meaning           | Datatype
 
 ## Example
 
-There are only 2 macros: `defsystem` and `defcomponent`.
-
-Systems are just plain multimethods and take at least one arg `c` / `[k v]`, dispatch on `k` and the default return value is `v`.
-
 ``` clojure
 (require '[x.x :refer :all])
 
@@ -41,7 +37,7 @@ Systems are just plain multimethods and take at least one arg `c` / `[k v]`, dis
   (tick [_ delta]
     (update v :counter + delta)))
 
-(apply-map tick {:a {:counter 0}} 10)
+(map-components tick {:a {:counter 0}} 10)
 ; {:a {:counter 10}}
 
 ; because systems are normal functions/multimethods you can just call them directly also
@@ -64,7 +60,7 @@ Systems are just plain multimethods and take at least one arg `c` / `[k v]`, dis
 
 ; this is a convenience function to apply one
 ; pure and one system with side-effects after another
-(apply-map-doseq [create create!] (atom {:a 0 :b 10 :foo 10}))
+(map->doseq-components [create create!] (atom {:a 0 :b 10 :foo 10}))
 ; CREATE A !
 ; B says hi
 ; #object[clojure.lang.Atom 0x7daf5b58 {:status :ready, :val {:a 1, :b 10, :foo 10, :fooz {:bar {:baz 3}}}}]
