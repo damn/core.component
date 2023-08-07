@@ -42,7 +42,7 @@
     ~k))
 
 (defn update-map
-  "Updates every map-entry with (f [k v])."
+  "Updates every map-entry with (apply f [k v] args)."
   [m f & args]
   (persistent!
    (reduce-kv (fn [new-map k v]
@@ -51,7 +51,7 @@
               m)))
 
 (defn doseq-entity
-  "Calls (f [k (k @e)] e) on each key of @e. Returns e."
+  "Calls (apply f [k (k @e)] e args) on each key of @e. Returns e."
   [e f & args]
   (doseq [k (keys @e)]
     (apply f [k (k @e)] e args))
