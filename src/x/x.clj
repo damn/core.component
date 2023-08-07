@@ -34,7 +34,7 @@
            (throw (IllegalArgumentException.
                    (str sys-var " requires " (count sys-params) " args: " sys-params "."
                         " Given " (count fn-params)  " args: " fn-params))))
-         (when (k (methods @sys-var))
+         (when (get (methods @sys-var) k)
            (println "WARNING: Overriding defcomponent" k "on" sys-var))
          `(defmethod ~sys ~k ~fn-params
             (let [~v (~(first fn-params) 1)]
