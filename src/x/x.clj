@@ -7,15 +7,14 @@
   [sys-name params]
   (when (zero? (count params))
     (throw (IllegalArgumentException. "First argument needs to be component.")))
+  (when-let [avar (resolve sys-name)]
+    (println "WARNING: Overriding defsystem:" avar))
   `(do
-
     (defmulti ~(vary-meta sys-name assoc :params (list 'quote params))
       (fn ~(symbol (str (name sys-name))) [& args#]
         ((first args#) 0)))
-
     (defmethod ~sys-name :default ~params
       (~(first params) 1))
-
     (var ~sys-name)))
 
 (defmacro defcomponent
@@ -33,8 +32,10 @@
            (throw (IllegalArgumentException. (str sys " does not exist."))))
          (when-not (= (count sys-params) (count fn-params))
            (throw (IllegalArgumentException.
-                   (str "<" k  "><" sys "> "sys-var " requires " (count sys-params) " args: " sys-params "."
+                   (str sys-var " requires " (count sys-params) " args: " sys-params "."
                         " Given " (count fn-params)  " args: " fn-params))))
+         (when (k (methods @sys-var))
+           (println "WARNING: Overriding defcomponent" k "on" sys-var))
          `(defmethod ~sys ~k ~fn-params
             (let [~v (~(first fn-params) 1)]
               ~@(rest fn-body)))))
@@ -42,16 +43,16 @@
 
 (defn update-map
   "Updates every map-entry with (f [k v])."
-  [f m]
+  [m f & args]
   (persistent!
    (reduce-kv (fn [new-map k v]
-                (assoc! new-map k (f [k v])))
+                (assoc! new-map k (apply f [k v] args)))
               (transient {})
               m)))
 
 (defn doseq-entity
   "Calls (f [k (k @e)] e) on each key of @e. Returns e."
-  [f e]
+  [e f & args]
   (doseq [k (keys @e)]
-    (f [k (k @e)] e))
+    (apply f [k (k @e)] e args))
   e)
