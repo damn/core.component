@@ -37,7 +37,7 @@ Abbreviation | Meaning           | Datatype
   (tick [_ delta]
     (update v :counter + delta)))
 
-(update-map #(tick % 10) {:a {:counter 0}})
+(update-map {:a {:counter 0}} tick 10))
 ; {:a {:counter 10}}
 
 ; because systems are normal functions/multimethods you can just call them directly also
@@ -56,7 +56,7 @@ Abbreviation | Meaning           | Datatype
   (create! [_ e]
     (println "B says hi")))
 
-(deref (doseq-entity create! (atom {:a 0 :b 10 :foo 10})))
+(deref (doseq-entity (atom {:a 0 :b 10 :foo 10}) create!))
 ; CREATE A !
 ; B says hi
 ; {:a 0, :b 10, :foo 10, :fooz {:bar {:baz 3}}}
