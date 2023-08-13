@@ -56,3 +56,9 @@
   (doseq [k (keys @e)]
     (apply f [k (k @e)] e args))
   e)
+
+(defmacro defmodule
+  "Expands to (defcomponent (keyword (ns-name *ns*)) ... ) "
+  [v & sys-impls]
+  (let [k (keyword (ns-name *ns*))]
+    `(defcomponent ~k ~v ~@sys-impls)))
