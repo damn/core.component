@@ -1,5 +1,7 @@
 (ns x.x)
 
+(def warn-on-override true)
+
 (defmacro defsystem
   "A system takes minimum one argument, a component.
   Components are [k v] vectors.
@@ -7,8 +9,9 @@
   [sys-name params]
   (when (zero? (count params))
     (throw (IllegalArgumentException. "First argument needs to be component.")))
-  (when-let [avar (resolve sys-name)]
-    (println "WARNING: Overriding defsystem:" avar))
+  (when warn-on-override
+    (when-let [avar (resolve sys-name)]
+      (println "WARNING: Overriding defsystem:" avar)))
   `(do
     (defmulti ~(vary-meta sys-name assoc :params (list 'quote params))
       (fn ~(symbol (str (name sys-name))) [& args#]
@@ -34,7 +37,8 @@
            (throw (IllegalArgumentException.
                    (str sys-var " requires " (count sys-params) " args: " sys-params "."
                         " Given " (count fn-params)  " args: " fn-params))))
-         (when (get (methods @sys-var) k)
+         (when (and warn-on-override
+                    (get (methods @sys-var) k))
            (println "WARNING: Overriding defcomponent" k "on" sys-var))
          `(defmethod ~sys ~k ~fn-params
             (let [~v (~(first fn-params) 1)]
