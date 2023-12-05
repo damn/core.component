@@ -40,6 +40,8 @@
          (when (and warn-on-override
                     (get (methods @sys-var) k))
            (println "WARNING: Overriding defcomponent" k "on" sys-var))
+         (when (some #(= % (first fn-params)) (rest fn-params))
+           (throw (IllegalArgumentException. (str "First component parameter is shadowed by another parameter at " sys-var))))
          `(defmethod ~sys ~k ~fn-params
             (let [~v (~(first fn-params) 1)]
               ~@(rest fn-body)))))
