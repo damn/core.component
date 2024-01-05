@@ -1,26 +1,27 @@
 (ns x.x)
 
+(def ^:private warn-on-override true)
+
 (defmacro defsystem
-  "A system takes minimum one argument, a component.
-  Components are [k v] vectors.
-  A system dispatches on k and the default return values is v."
+  "A system is a multimethod which dispatches on ffirst.
+  Can be used with defcomponent to check params count at compile time.
+  Also gives warnings when overwritten."
   [sys-name params]
   (when (zero? (count params))
     (throw (IllegalArgumentException. "First argument needs to be component.")))
-  (when-let [avar (resolve sys-name)]
-    (println "WARNING: Overriding defsystem:" avar))
+  (when warn-on-override
+    (when-let [avar (resolve sys-name)]
+      (println "WARNING: Overwriting defsystem:" avar)))
   `(do
     (defmulti ~(vary-meta sys-name assoc :params (list 'quote params))
-      (fn ~(symbol (str (name sys-name))) [& args#]
-        ((first args#) 0)))
-    (defmethod ~sys-name :default ~params
-      (~(first params) 1))
+      (fn ~(symbol (str (name sys-name))) [& args#] (ffirst args#)))
     (var ~sys-name)))
 
 (defmacro defcomponent
   "Implements system defmethods for k.
-
-  v is bound over each function and can be used for common destructuring operations."
+  v is bound over each function and can be used for common destructuring operations.
+  Gives error when the params count does not equal the system params count and gives warnings when
+  overwriting a defmethod."
   [k v & sys-impls]
   `(do
     ~@(for [[sys & fn-body] sys-impls
@@ -30,35 +31,46 @@
         (do
          (when-not sys-var
            (throw (IllegalArgumentException. (str sys " does not exist."))))
-         (when-not (= (count sys-params) (count fn-params))
+         (when-not (= (count sys-params) (count fn-params)) ; defmethods do not check this, that's why we check it here.
            (throw (IllegalArgumentException.
                    (str sys-var " requires " (count sys-params) " args: " sys-params "."
                         " Given " (count fn-params)  " args: " fn-params))))
-         (when (get (methods @sys-var) k)
-           (println "WARNING: Overriding defcomponent" k "on" sys-var))
+         (when (and warn-on-override
+                    (get (methods @sys-var) k))
+           (println "WARNING: Overwriting defcomponent" k "on" sys-var))
+         (when (some #(= % (first fn-params)) (rest fn-params))
+           (throw (IllegalArgumentException. (str "First component parameter is shadowed by another parameter at " sys-var))))
          `(defmethod ~sys ~k ~fn-params
             (let [~v (~(first fn-params) 1)]
               ~@(rest fn-body)))))
     ~k))
 
 (defn update-map
-  "Updates every map-entry with (apply f [k v] args)."
-  [m f & args]
-  (persistent!
-   (reduce-kv (fn [new-map k v]
-                (assoc! new-map k (apply f [k v] args)))
-              (transient {})
-              m)))
+  "Recursively calls (assoc m k (multimethod [k v])) for every k of (keys (methods multimethod)),
+  which is non-nil/false in m."
+  [m multimethod]
+  (loop [ks (keys (methods multimethod))
+         m m]
+    (if (seq ks)
+      (recur (rest ks)
+             (let [k (first ks)]
+               (if-let [v (k m)]
+                 (assoc m k (multimethod [k v]))
+                 m)))
+      m)))
 
-(defn doseq-entity
-  "Calls (apply f [k (k @e)] e args) on each key of @e. Returns e."
-  [e f & args]
-  (doseq [k (keys @e)]
-    (apply f [k (k @e)] e args))
-  e)
+(comment
+ (defmulti foo ffirst)
 
-(defmacro defmodule
-  "Expands to (defcomponent (keyword (ns-name *ns*)) ... ) "
-  [v & sys-impls]
-  (let [k (keyword (ns-name *ns*))]
-    `(defcomponent ~k ~v ~@sys-impls)))
+ (defmethod foo :bar [[_ v]] (+ v 2))
+
+ (update-map {} foo)
+ {}
+
+ (update-map {:baz 2} foo)
+ {:baz 2}
+
+ (update-map {:baz 2 :bar 0} foo)
+ {:baz 2, :bar 2}
+
+ )
