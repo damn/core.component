@@ -46,16 +46,16 @@
     ~k))
 
 (defn update-map
-  "Recursively calls (assoc m k (multimethod [k v])) for every k of (keys (methods multimethod)),
+  "Recursively calls (assoc m k (apply multimethod [k v] args)) for every k of (keys (methods multimethod)),
   which is non-nil/false in m."
-  [m multimethod]
+  [m multimethod & args]
   (loop [ks (keys (methods multimethod))
          m m]
     (if (seq ks)
       (recur (rest ks)
              (let [k (first ks)]
                (if-let [v (k m)]
-                 (assoc m k (multimethod [k v]))
+                 (assoc m k (apply multimethod [k v] args))
                  m)))
       m)))
 
