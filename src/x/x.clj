@@ -67,3 +67,11 @@
  (= (update-map {:baz 2} foo) {:baz 2})
  (= (update-map {:baz 2 :bar 0} foo) {:baz 2, :bar 2})
  )
+
+(defn- apply-system [system m & args]
+  (for [k (keys (methods system))
+        :let [v (k m)]
+        :when v]
+    (try (apply system [k v] m args)
+         (catch Throwable t
+           (throw (ex-info (str t) {:component k}))))))
