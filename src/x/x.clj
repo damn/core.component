@@ -27,7 +27,8 @@
     ~@(for [[sys & fn-body] sys-impls
             :let [sys-var (resolve sys)
                   sys-params (:params (meta sys-var))
-                  fn-params (first fn-body)]]
+                  fn-params (first fn-body)
+                  method-name (symbol (str (name (symbol sys-var)) "-" (name k)))]]
         (do
          (when-not sys-var
            (throw (IllegalArgumentException. (str sys " does not exist."))))
@@ -40,7 +41,7 @@
            (println "WARNING: Overwriting defcomponent" k "on" sys-var))
          (when (some #(= % (first fn-params)) (rest fn-params))
            (throw (IllegalArgumentException. (str "First component parameter is shadowed by another parameter at " sys-var))))
-         `(defmethod ~sys ~k ~fn-params
+         `(defmethod ~sys ~k ~method-name ~fn-params
             (let [~v (~(first fn-params) 1)]
               ~@(rest fn-body)))))
     ~k))
@@ -61,16 +62,8 @@
 
 (comment
  (defmulti foo ffirst)
-
  (defmethod foo :bar [[_ v]] (+ v 2))
-
- (update-map {} foo)
- {}
-
- (update-map {:baz 2} foo)
- {:baz 2}
-
- (update-map {:baz 2 :bar 0} foo)
- {:baz 2, :bar 2}
-
+ (= (update-map {} foo) {})
+ (= (update-map {:baz 2} foo) {:baz 2})
+ (= (update-map {:baz 2 :bar 0} foo) {:baz 2, :bar 2})
  )
