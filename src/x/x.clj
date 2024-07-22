@@ -1,6 +1,6 @@
 (ns x.x)
 
-(def ^:private warn-on-override true)
+(def ^:private warn-on-override true) ; TODO not sure if this works
 
 (defmacro defsystem
   "A system is a multimethod which dispatches on ffirst.
@@ -17,18 +17,28 @@
       (fn ~(symbol (str (name sys-name))) [& args#] (ffirst args#)))
     (var ~sys-name)))
 
+(def attributes {})
+
+(defn defattribute [k attr-map]
+  ; TODO can pass a general var 'attribute-schema' ?
+  ;(assert (:schema attr-map) k) (not all this, ...)
+  ;(assert (:widget attr-map) k)
+  ; optional: :doc
+  (alter-var-root #'attributes assoc k attr-map))
+
 (defmacro defcomponent
   "Implements system defmethods for k.
   v is bound over each function and can be used for common destructuring operations.
   Gives error when the params count does not equal the system params count and gives warnings when
   overwriting a defmethod."
-  [k v & sys-impls]
+  [k attr-map v & sys-impls]
   `(do
+    (defattribute ~k ~attr-map)
     ~@(for [[sys & fn-body] sys-impls
             :let [sys-var (resolve sys)
                   sys-params (:params (meta sys-var))
                   fn-params (first fn-body)
-                  method-name (symbol (str (name (symbol sys-var)) "-" (name k)))]]
+                  method-name (symbol (str (name (symbol sys-var)) "." (name k)))]]
         (do
          (when-not sys-var
            (throw (IllegalArgumentException. (str sys " does not exist."))))
@@ -73,3 +83,15 @@
         :let [v (k m)]
         :when v]
     (apply system [k v] m args)))
+
+; TODO transducer ?
+; transduce
+; return xform and only run once over coll ?
+#_(defn- apply-system [system m ctx]
+  (into []
+        ; TODO comp keep ?
+        (map (fn [k]
+               (let [v (k m)]
+                 (when v
+                   (system [k v] m ctx)))))
+        (keys (methods system))))
