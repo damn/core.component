@@ -1,6 +1,6 @@
 (ns x.x)
 
-(def ^:private warn-on-override true)
+(def ^:private warn-on-override true) ; TODO not sure if this works
 
 (defmacro defsystem
   "A system is a multimethod which dispatches on ffirst.
@@ -17,17 +17,28 @@
       (fn ~(symbol (str (name sys-name))) [& args#] (ffirst args#)))
     (var ~sys-name)))
 
+(def attributes {})
+
+(defn defattribute [k attr-map]
+  ; TODO can pass a general var 'attribute-schema' ?
+  ;(assert (:schema attr-map) k) (not all this, ...)
+  ;(assert (:widget attr-map) k)
+  ; optional: :doc
+  (alter-var-root #'attributes assoc k attr-map))
+
 (defmacro defcomponent
   "Implements system defmethods for k.
   v is bound over each function and can be used for common destructuring operations.
   Gives error when the params count does not equal the system params count and gives warnings when
   overwriting a defmethod."
-  [k v & sys-impls]
+  [k attr-map v & sys-impls]
   `(do
+    (defattribute ~k ~attr-map)
     ~@(for [[sys & fn-body] sys-impls
             :let [sys-var (resolve sys)
                   sys-params (:params (meta sys-var))
-                  fn-params (first fn-body)]]
+                  fn-params (first fn-body)
+                  method-name (symbol (str (name (symbol sys-var)) "." (name k)))]]
         (do
          (when-not sys-var
            (throw (IllegalArgumentException. (str sys " does not exist."))))
@@ -40,37 +51,47 @@
            (println "WARNING: Overwriting defcomponent" k "on" sys-var))
          (when (some #(= % (first fn-params)) (rest fn-params))
            (throw (IllegalArgumentException. (str "First component parameter is shadowed by another parameter at " sys-var))))
-         `(defmethod ~sys ~k ~fn-params
+         `(defmethod ~sys ~k ~method-name ~fn-params
             (let [~v (~(first fn-params) 1)]
               ~@(rest fn-body)))))
     ~k))
 
 (defn update-map
-  "Recursively calls (assoc m k (multimethod [k v])) for every k of (keys (methods multimethod)),
+  "Recursively calls (assoc m k (apply multimethod [k v] args)) for every k of (keys (methods multimethod)),
   which is non-nil/false in m."
-  [m multimethod]
+  [m multimethod & args]
   (loop [ks (keys (methods multimethod))
          m m]
     (if (seq ks)
       (recur (rest ks)
              (let [k (first ks)]
                (if-let [v (k m)]
-                 (assoc m k (multimethod [k v]))
+                 (assoc m k (apply multimethod [k v] args))
                  m)))
       m)))
 
 (comment
  (defmulti foo ffirst)
-
  (defmethod foo :bar [[_ v]] (+ v 2))
-
- (update-map {} foo)
- {}
-
- (update-map {:baz 2} foo)
- {:baz 2}
-
- (update-map {:baz 2 :bar 0} foo)
- {:baz 2, :bar 2}
-
+ (= (update-map {} foo) {})
+ (= (update-map {:baz 2} foo) {:baz 2})
+ (= (update-map {:baz 2 :bar 0} foo) {:baz 2, :bar 2})
  )
+
+(defn apply-system [system m & args]
+  (for [k (keys (methods system))
+        :let [v (k m)]
+        :when v]
+    (apply system [k v] m args)))
+
+; TODO transducer ?
+; transduce
+; return xform and only run once over coll ?
+#_(defn- apply-system [system m ctx]
+  (into []
+        ; TODO comp keep ?
+        (map (fn [k]
+               (let [v (k m)]
+                 (when v
+                   (system [k v] m ctx)))))
+        (keys (methods system))))
