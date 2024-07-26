@@ -1,4 +1,4 @@
-(ns clojure.core.component)
+(ns core.component)
 
 (def ^:private warn-on-override true) ; TODO not sure if this works
 
