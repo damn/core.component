@@ -1,17 +1,9 @@
-# <p align="center"> x.x </p>
-
-Grouping defmethods with `defcomponent` for multimethods which dispatch on ffirst `defsystem`.
-Gives destructuring similar to defrecord for value v of [k v] arg. (a 'component').
-
-Giving warnings when overwritten and checking params count at compile-time.
+# <p align="center"> core.component </p>
 
 # Installation
 
-[![](https://jitpack.io/v/damn/x.x.svg)](https://jitpack.io/#damn/x.x)
-``` clojure
-[com.github.damn/x.x "main-SNAPSHOT"]
-```
+[![](https://jitpack.io/v/damn/core.component.svg)](https://jitpack.io/#damn/core.component)
 
 # Documentation
 
-* [API docs](https://damn.github.io/x.x/)
+* [API docs](https://damn.github.io/core.component/)
