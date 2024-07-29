@@ -1,11 +1,13 @@
-(ns core.component)
+(ns core.component
+  (:refer-clojure :exclude [defn]))
 
-(def ^:private warn-on-override true) ; TODO not sure if this works
+(def ^:private warn-on-override true)
 
-(defmacro defsystem
-  "A system is a multimethod which dispatches on ffirst.
-  Can be used with defcomponent to check params count at compile time.
-  Also gives warnings when overwritten."
+(defmacro defn
+  "Defines a component function with the given parameter vector.
+  See also core.component/def.
+  Obligatory first parameter: component, a vector of [key/attribute value].
+  Dispatching on component attribute."
   [sys-name params]
   (when (zero? (count params))
     (throw (IllegalArgumentException. "First argument needs to be component.")))
@@ -19,45 +21,44 @@
 
 (def attributes {})
 
-(defn defattribute [k attr-map]
-  ; TODO can pass a general var 'attribute-schema' ?
-  ;(assert (:schema attr-map) k) (not all this, ...)
-  ;(assert (:widget attr-map) k)
-  ; optional: :doc
-  (alter-var-root #'attributes assoc k attr-map))
+(defmacro def
+  "Defines a component with key 'k'. User-data attr-map.
+  v is let-bound over every fn-implementation;
 
-(defmacro defcomponent
-  "Implements system defmethods for k.
-  v is bound over each function and can be used for common destructuring operations.
-  Gives error when the params count does not equal the system params count and gives warnings when
-  overwriting a defmethod."
-  [k attr-map v & sys-impls]
-  `(do
-    (defattribute ~k ~attr-map)
-    ~@(for [[sys & fn-body] sys-impls
-            :let [sys-var (resolve sys)
-                  sys-params (:params (meta sys-var))
-                  fn-params (first fn-body)
-                  method-name (symbol (str (name (symbol sys-var)) "." (name k)))]]
-        (do
-         (when-not sys-var
-           (throw (IllegalArgumentException. (str sys " does not exist."))))
-         (when-not (= (count sys-params) (count fn-params)) ; defmethods do not check this, that's why we check it here.
-           (throw (IllegalArgumentException.
-                   (str sys-var " requires " (count sys-params) " args: " sys-params "."
-                        " Given " (count fn-params)  " args: " fn-params))))
-         (when (and warn-on-override
-                    (get (methods @sys-var) k))
-           (println "WARNING: Overwriting defcomponent" k "on" sys-var))
-         (when (some #(= % (first fn-params)) (rest fn-params))
-           (throw (IllegalArgumentException. (str "First component parameter is shadowed by another parameter at " sys-var))))
-         `(defmethod ~sys ~k ~method-name ~fn-params
-            (let [~v (~(first fn-params) 1)]
-              ~@(rest fn-body)))))
-    ~k))
+  Example:
+  (defcomponent :entity/animation {:schema animation}
+    animation
+    (entity/render [_ g]
+      (g/render-animation animation)))"
+  ([k attr-map]
+   `(alter-var-root #'attributes assoc ~k ~attr-map))
+  ([k attr-map v & sys-impls]
+   `(do
+     (core.component/def ~k ~attr-map)
+     ~@(for [[sys & fn-body] sys-impls
+             :let [sys-var (resolve sys)
+                   sys-params (:params (meta sys-var))
+                   fn-params (first fn-body)
+                   method-name (symbol (str (name (symbol sys-var)) "." (name k)))]]
+         (do
+          (when-not sys-var
+            (throw (IllegalArgumentException. (str sys " does not exist."))))
+          (when-not (= (count sys-params) (count fn-params)) ; defmethods do not check this, that's why we check it here.
+            (throw (IllegalArgumentException.
+                    (str sys-var " requires " (count sys-params) " args: " sys-params "."
+                         " Given " (count fn-params)  " args: " fn-params))))
+          (when (and warn-on-override
+                     (get (methods @sys-var) k))
+            (println "WARNING: Overwriting defcomponent" k "on" sys-var))
+          (when (some #(= % (first fn-params)) (rest fn-params))
+            (throw (IllegalArgumentException. (str "First component parameter is shadowed by another parameter at " sys-var))))
+          `(defmethod ~sys ~k ~method-name ~fn-params
+             (let [~v (~(first fn-params) 1)]
+               ~@(rest fn-body)))))
+     ~k)))
 
-(defn update-map
-  "Recursively calls (assoc m k (apply multimethod [k v] args)) for every k of (keys (methods multimethod)),
+(clojure.core/defn update-map
+  "Recursively calls (assoc m k (apply component/fn [k v] args)) for every k of (keys (methods component/fn)),
   which is non-nil/false in m."
   [m multimethod & args]
   (loop [ks (keys (methods multimethod))
@@ -78,7 +79,7 @@
  (= (update-map {:baz 2 :bar 0} foo) {:baz 2, :bar 2})
  )
 
-(defn apply-system [system m & args]
+(clojure.core/defn apply-system [system m & args]
   (for [k (keys (methods system))
         :let [v (k m)]
         :when v]
