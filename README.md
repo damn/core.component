@@ -1,3 +1,5 @@
+Archived: Development continues in https://github.com/damn/Fullmoon
+
 # <p align="center"> core.component </p>
 
 # Installation
